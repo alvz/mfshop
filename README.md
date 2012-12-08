@@ -5,7 +5,7 @@ Please note that Mfshop is a non-professional project so it may have bugs or lac
 Main features: 
 
 1.  Users management: Login/logout/register
-2.	2- Products management
+2.	Products management
 3.	Image upload
 4.	Image gallery
 5.	FAQ
