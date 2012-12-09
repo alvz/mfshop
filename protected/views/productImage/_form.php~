@@ -1,0 +1,117 @@
+<style type="text/css" >
+    div.imageUploader {
+        clear: both;
+        width: 50%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border: 1px dashed gray;
+        padding: 10px;
+        background-color: rgb(240, 240, 240);
+        overflow: auto;
+        border-radius: 10px;
+        -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .15) inset;
+        -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .15) inset;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .15) inset;
+    }
+    div.imageUploader img {
+        float: right;
+        border: 4px solid white;
+        border-radius: 10px;
+        box-shadow: 3px 3px 7px #888;
+        max-width: 150px;
+        max-height: 200px;
+    }
+    div.qq-upload-button{
+        background-color:#616161;
+        border: 1px solid rgb(204, 204, 204);
+        border-radius: 10px;
+    }
+
+</style>
+
+<div class="form">
+
+    <?php if (Yii::app()->user->hasFlash('productSubmitted')) { ?>
+
+        <div class="flash-success">
+            <?php echo Yii::app()->user->getFlash('productSubmitted'); ?>
+        </div>
+        <?php
+        Yii::app()->clientScript->registerScript(
+                'fadeAndHideEffect', '$(".flash-success").animate({opacity: 1.0}, 3000).fadeOut("slow");'
+        );
+    }
+    ?>
+
+    <?php
+    $form = $this->beginWidget('CActiveForm', array(
+        'id' => 'product-form',
+        'enableAjaxValidation' => false,
+        'enableClientValidation' => true,
+        'clientOptions' => array(
+            'validateOnSubmit' => true,
+        ),
+            ));
+    ?>
+
+    <p>Please upload the product's images (if any) using the file uploader below.
+        You can also drag & drop your files here if you prefer. </p>
+    <div class="flash-notice">Allowed extensions are: jpeg, jpg, png and gif .</div>
+
+    <?php echo $form->errorSummary($model); ?>   
+
+
+    <?php echo CHtml::hiddenField('pid', $pid, array('id' => 'pid')); ?>
+
+    <div class="row imageUploader">
+        <?php echo $form->labelEx($model, 'imageFile'); ?>        
+        <?php echo CHtml::image('', 'no photo image', array('id' => 'imageViewer')); ?>
+        <?php echo $form->error($model, 'imageFile'); ?>
+
+        <br/><br/>
+        <div id='myuploader'></div>
+
+        <script type="text/javascript">            
+            var actionForUpload  =  "index.php?r=productImage/ProductUploadImage&pid=" +
+                document.getElementById('pid').value;
+            
+            var actionForView    = 'index.php?r=productImage/ProductUploadImageViewer';
+            
+            function nocache(){
+                var dateObject = new Date();
+                var uuid = dateObject.getTime();
+                return "&nocache="+uuid;
+            }
+            function refreshPhoto(){
+                $('#imageViewer').attr('src','');
+                setTimeout(function(){
+                    $('#imageViewer').attr('src',actionForView+nocache()) ;
+                },100);
+            }            
+            var uploader  =  new qq.FileUploader({                
+                element: document.getElementById('myuploader'),                
+                action: actionForUpload+nocache(),
+                debug: false,
+                onComplete: function(id, fileName , responseJSON){
+                    refreshPhoto();
+                },
+                onCancel : function (id, fileName ){
+                },
+                showMessage: function (m){
+                    alert("ERROR:\n"+m);
+                }
+            });
+
+            refreshPhoto();
+        </script>
+    </div>   
+
+    <div class="row buttons">
+        <?php
+        echo CHtml::link(CHtml::htmlButton('<span class="icon icon-tick">Finish</span>', array('class' => 'button grey')), array('product/view', 'id' => $pid));
+        ?>
+    </div>
+
+    <?php $this->endWidget(); ?>
+
+</div><!-- form -->
