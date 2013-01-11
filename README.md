@@ -24,7 +24,7 @@ Mfshop is a non-professional project so it may have bugs or lack some features b
 
 The version of Yii which I used was 1.1.7 but it should work with any other version greater than that. For database you can use the SQL script file which can be found in the root directory of the project.
 
-**user/pass for login page: admin/admin**
+**user/pass for login page: admin/123456**
 
 Good luck!
 
